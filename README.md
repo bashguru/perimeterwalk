@@ -53,6 +53,7 @@ $ unzip chromedriver_linux64.zip
 $ sudo mv chromedriver /user/bin/chromedriver
 $ chromedriver --version
 $ popd
+$ pip install -r requirements.txt
 $ bash perimeterwalk.sh
 ```
 
