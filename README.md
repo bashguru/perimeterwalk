@@ -33,7 +33,7 @@ Operating system tested on: WSL2 Ubuntu 20.04.5 LTS
 $ sudo apt-get install python3.8
 $ sudo apt-get install python3-pip
 $ sudo apt-get install jq
-$ sudo apt-get install real-path
+$ realpath --version
 $ sudo apt-get install unzip
 
 # Install Google-Chrome
