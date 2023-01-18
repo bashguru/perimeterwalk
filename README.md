@@ -55,7 +55,7 @@ $ wget https://chromedriver.storage.googleapis.com/"$webdriver_version"/chromedr
 # Unzips the driver
 $ unzip chromedriver_linux64.zip
 # Moves driver to an executable path
-$ sudo mv chromedriver /user/bin/chromedriver
+$ sudo mv chromedriver /usr/bin/chromedriver
 # Checks to see what version of chromedriver was installed, it should match google-chrome --version
 $ chromedriver --version
 # Sends you back to the perimeter walk parent directory
