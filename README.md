@@ -26,7 +26,7 @@ Instructions on how to use the project, including any command-line options or co
 
 Operating system tested on: WSL2 Ubuntu 20.04.5 LTS
 
-## In linux command line, start in the parent directory perimeterwalk, copy and paste, leave out the "$" and don't copy and paste lines with "#"
+## In linux command line, start in the parent directory perimeter-walk, copy and paste, leave out the "$" and don't copy and paste lines with "#"
 
 ```
 # Install Linux Dependencies
@@ -40,6 +40,8 @@ $ sudo apt-get install unzip
 $ wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 $ sudo apt install ./google-chrome-stable_current_amd64.deb
 $ sudo apt install google-chrome-stable
+# After installation remove the package
+$ sudo rm ./google-chrome-stable_current_amd64.deb
 
 # Check the version of Google-Chrome you have installed and take note for the drivers required
 $ google-chrome --version
