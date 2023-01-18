@@ -71,7 +71,11 @@ The files will be in /tmp/avertere.com when finished
 
 You can use xdg-open to see the files even within the WSL environment.
 
+### Watch the video on how to setup and run!
+[![asciicast](https://asciinema.org/a/552670.png)](https://asciinema.org/a/552670)
+
 ```
+
 # In the /tmp directory you can see all for all .com directories open .png files, to exit go to ctrl + C
 $ for i in /tmp/*.com; do timeout 2s xdg-open $i/*.png; done 
 
@@ -79,7 +83,7 @@ $ for i in /tmp/*.com; do timeout 2s xdg-open $i/*.png; done
 $ xdg-open /tmp/$directory/$filename.png
 ```
 
-We recommend moving these files out of temp for future reference and analysis. 
+We recommend moving these files out of tmp for future reference and analysis. 
 
 # Contributing
 Thank you for your interest in contributing to our project! We welcome and appreciate any contributions, whether they are bug reports, bug fixes, feature requests, or code contributions.
