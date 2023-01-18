@@ -26,10 +26,10 @@ Instructions on how to use the project, including any command-line options or co
 
 Operating system tested on: WSL2 Ubuntu 20.04.5 LTS
 
-## In linux command line, start in the parent directory perimeterwalk
+## In linux command line, start in the parent directory perimeterwalk, copy and paste, leave out the "$" and don't copy and paste lines with "#"
 
 ```
-
+# Install Linux Dependencies
 $ sudo apt-get install python3.8
 $ sudo apt-get install python3-pip
 $ sudo apt-get install jq
@@ -44,16 +44,23 @@ $ sudo apt install google-chrome-stable
 # Check the version of Google-Chrome you have installed and take note for the drivers required
 $ google-chrome --version
 
-# Install the chrome selenium webdriver - Go to https://chromedriver.chromium.org/downloads
-# Select the webdriver that matches the google-chrome --version
+# Obtains the version of chrome webdriver required
 $ webdriver_version=$(google-chrome --version | awk '{print $3}')
+# Goes to the /tmp folder and tracks previous perimeter walk parent folder full path
 $ pushd /tmp
+# Downloads the driver
 $ wget https://chromedriver.storage.googleapis.com/"$webdriver_version"/chromedriver_linux64.zip
+# Unzips the driver
 $ unzip chromedriver_linux64.zip
+# Moves driver to an executable path
 $ sudo mv chromedriver /user/bin/chromedriver
+# Checks to see what version of chromedriver was installed, it should match google-chrome --version
 $ chromedriver --version
+# Sends you back to the perimeter walk parent directory
 $ popd
+# Installs the python requirements
 $ pip install -r requirements.txt
+# Starts the program
 $ bash perimeterwalk.sh
 ```
 
