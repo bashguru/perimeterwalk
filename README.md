@@ -9,18 +9,17 @@ The intention is to check perimeter hygiene and to assess, potential opportuniti
 The script was developed and tested on WSL2 Ubuntu 20.04.5 LTS.  The script will check linux dependencies and python dependencies and exit if they are not met.  See the python requirements.txt file is included.
 
 ### Linux Dependencies
-python >= 3.8.10 \n
-jq >= 1.6 \n
-pip >= 20.0.2 \n
-realpath >= 8.30 \n
-google-chrome >= 109.0.5414.74 \n
-chromedriver >= 109.0.5414.74 (https://chromedriver.chromium.org/downloads) - Must match version of Google Chrome installed \n
+python >= 3.8.10 * 
+jq >= 1.6 *
+pip >= 20.0.2 *
+realpath >= 8.30 *
+google-chrome >= 109.0.5414.74 *
+chromedriver >= 109.0.5414.74 (https://chromedriver.chromium.org/downloads) - Must match version of Google Chrome installed *
 
 ### Python Dependencies
-fake-useragent >= 1.1.1 \n
-requests >= 2.28.2 \n
-selenium >= 4.7.2 \n
-
+fake-useragent >= 1.1.1 *
+requests >= 2.28.2 *
+selenium >= 4.7.2 *
 
 # Usage
 Instructions on how to use the project, including any command-line options or configuration settings.
