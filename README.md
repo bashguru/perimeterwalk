@@ -1,6 +1,4 @@
-# perimeter-walk
-
-# Project Title
+# Perimeter walk
 Perimeterwalk is a simple script that reads one or many root domains.  It checks crt.sh for subdomains, then the script proceeds to visit each domain and subdomain.  If the page renders, it takes a picture and submits the picture in the "/tmp/$root_domain" directory.
 
 The intention is to check perimeter hygiene and to assess, potential opportunities for an adversary to break-in.  The script is simple and non-evasive.  It is an easy way to discover DNS names no longer pointing to a resource, subdomain hijacking opportunities, account take over opportunities, and servers that are outdated and forgotten about.
