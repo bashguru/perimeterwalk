@@ -76,7 +76,10 @@ You can use xdg-open to see the files even within the WSL environment.
 
 ```
 
-# In the /tmp directory you can see all .com directories and open .png files within the directories. It will timeout in 2 seconds. To exit go to ctrl + C within the terminal.  If you want to autoloop while pictures are taken, just use a while true loop.
+# In the /tmp directory you can see all .com directories and open .png files within the directories. 
+# It will timeout in 2 seconds. 
+# To exit go to ctrl + C within the terminal.  
+# If you want to autoloop while pictures are taken, just use a while true loop.
 $ for i in /tmp/*.com; do timeout 2s xdg-open $i/*.png; done 
 
 # To open a single file in /tmp folder
