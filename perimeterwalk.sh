@@ -2,9 +2,10 @@
 
 # Author: bashguru
 # Date: 1/18/2023
+# Perimeter Walk Version 2, adding the ability to visit CIDR blocks
 
 # Linux dependencies.
-linuxDependencies=("python3" "jq" "pip" "realpath" "google-chrome")
+linuxDependencies=("python3" "jq" "pip" "realpath" "google-chrome" "prips")
 pythonDependencies=("selenium>=4.7.2" "fake-useragent>=1.1.1" "requests>=2.28.2")
 
 # Checks if Python3 is installed, if not exit.
@@ -32,64 +33,86 @@ done
 # Function to validate the root domain
 
 validate_root_domain() {
-    # Check fi the root domain is a valid domain name
+    # Check if the root domain is a valid domain name.
     if [[ "$1" =~ ^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$ ]]; then
         printf "The root domain %s is valid.\n" "$1"
         return 0 # valid domain name
+    # Check if the IP address is a IPV4 CIDR Block. 
+    elif [[ $1 =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/[0-9]{1,2}$ ]]; then
+        printf "The IPv4 CIDR block %s is valid.\n" "$1"
+        return 0 # Invalid domain name
     else
-        return 1 # Invalid domain name
+        printf "Either the root domain or IPV4 CIDR Block %s is invalid.\n" "$1"
+        exit 1
     fi
 }
 
 # Declare an empty array to store the root domains
-root_domains=()
+inputs=()
 
 # Prompt the user for one or many root domains
 while true; do
     printf "\n"
-    read -p "Enter a root domain (leave blank to finish): " root_domain
-    if [[ -z "$root_domain" ]]; then
+    read -r -p "Enter a root domain or CIDR Block of IPs (leave blank to finish): " input
+
+    if [[ -z "$input" ]]; then
         break # No more root domains
     fi
     # Validate the root domain
-    if ! validate_root_domain "$root_domain"; then
-        echo >&2 "Error: Invalid root domain. Only use the root domain, for example: google.com ."
+    if ! validate_root_domain "$input"; then
+        echo >&2 "Error: Invalid root domain or IPV4 CIDR Block. Only use the root domain or IPV4 CIDR block."
+        echo >&2 "For example root domain: google.com "
+        echo >&2 "For example IPV4 CIDR Block: 23.192.0.0/11"
         continue
     fi
     # Check if the root domain is already in the array
-    if [[ " ${root_domains[*]} " == *" $root_domain "* ]]; then
+    if [[ " ${inputs[*]} " == *" $input "* ]]; then
         echo >&2 "Error: Root domain is not unique"
         continue
     fi
     # Add the root domain to the array
-    root_domains+=("$root_domain")
+    inputs+=("$input")
 done
 
 #Create a array temporary filepaths
 tempFilepaths=()
 directorypaths=()
 
-# Loop through the array and collect from crt.sh on each root domain, sotring the output in the temporary file
-for domain in "${root_domains[@]}"; do
-    temp_file=$(mktemp -t "$domain.XXXXXX")
-    printf "\nAttempting to collect transparency logs of %s.\n" "$domain"
-    curl -s "https://crt.sh/?q=${domain}&output=json" | jq -r '.[].name_value' | sed 's/\*\.//g; s/^www\.//g' | sort -u >>"$temp_file"
-    if [[ -z "$temp_file" ]]; then
-        echo "crt.sh website may be down.  Come back and try again later."
-        exit 1
+# Loop through the array and collect from crt.sh on each root domain, sorting the output in the temporary file, add ip addresses too
+
+for domain in "${inputs[@]}"; do
+    domain_ip_filename=$(echo "$domain" |  sed "s/\//_/")
+    temp_file=$(mktemp -t "$domain_ip_filename.XXXXXX") 
+    if [[ $domain =~ ^[a-zA-Z0-9][a-zA-Z0-9-]*\.[a-zA-Z]{2,}$ ]]; then
+        printf "\nAttempting to collect transparency logs of %s.\n" "$domain"
+        curl -s "https://crt.sh/?q=${domain}&output=json" | jq -r '.[].name_value' | sed 's/\*\.//g; s/^www\.//g' | sort -u >>"$temp_file"
+        if [[ -z "$temp_file" ]]; then
+            echo "crt.sh website may be down.  Come back and try again later."
+            exit 1
+        fi
+        path=$(realpath "${temp_file}")
+        tempFilepaths+=("$path")
+        printf "Adding the root domain to the file %s.\n" "$path"
+        printf "%s" "$domain" >>"$temp_file"
+        printf "Pausing for random number of seconds before the next request.\n"
+        # Sleep for a random number of seconds between 1 and 10
+        sleep $(((RANDOM % 10) + 1))
+
+
+    elif [[ $domain =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/[0-9]{1,2}$ ]]; then
+        printf "\nAdding all IP addresses into the list from CIDR Block %s\n" "$domain"
+        prips "$domain" >> "$temp_file" 
+        path=$(realpath "${temp_file}")
+        tempFilepaths+=("$path")
+        cat "$temp_file"
+        wc -l "$temp_file"
     fi
-    path=$(realpath "${temp_file}")
-    tempFilepaths+=("$path")
-    printf "Adding the root domain to the file %s.\n" "$path"
-    printf "%s" "$domain" >>"$temp_file"
-    printf "Pausing for random number of seconds before the next request.\n"
-    # Sleep for a random number of seconds between 1 and 10
-    sleep $(((RANDOM % 10) + 1))
+    
 done
 
 for tempFilepath in "${tempFilepaths[@]}"; do
     file_name=$(basename "$tempFilepath")
-    directory=$(echo "/tmp/$file_name" | sed 's/\.[^.]*$//')
+    directory=$(echo "/tmp/$file_name" | sed 's/\.[^.]*$//;')
     printf "Directory %s\n" "$directory"
     directorypaths+=("$directory")
 
